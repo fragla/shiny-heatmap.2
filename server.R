@@ -1,14 +1,33 @@
 library(shiny)
 library(gplots)
+library(xlsx)
+library(mime)
 # Define server logic required to plot various variables against mpg
 shinyServer(function(input, output) {
 
-	#tpm <- readRDS("data/tpm.rds")
+  readData <- reactive({
+    if(input$data$type==mimemap["xlsx"]) {
+      data <- read.xlsx2(file=input$data$datapath, sheetIndex=1, row.names=1, header=TRUE)
+    }
+    else {
+      data <- read.csv(file=input$data$datapath, header=TRUE, row.names=1)
+    }
+    return(data)
+  })
+
+  readExperiment <- reactive({
+    if(input$experiment$type==mimemap["xlsx"]) {
+      experiment <- read.xlsx2(file=input$experiment$datapath, sheetIndex=1, header=TRUE)
+    }
+    else {
+      experiment <- read.csv(file=input$experiment$datapath, header=TRUE)
+    }
+    return(experiment)
+  })
 
 	goi.heatmap <- function(input) {
-		data <- read.csv(input$data$datapath, header=TRUE, row.names=1)
+    data <- readData()
 		filter <- as.character(unlist(strsplit(input$filter, "\\s")))
-		print(rownames(data))
   		tpm.filter <- data[tolower(rownames(data)) %in% tolower(filter),]
 
   		key.label <- input$keylabel
@@ -30,9 +49,9 @@ shinyServer(function(input, output) {
 
   		col.colours <- NULL
   		if(!is.null(input$experiment)) {
-  			experiment <- read.csv(input$experiment$datapath, header=TRUE)
+        experiment <- readExperiment()
   			idx <- match(colnames(data), as.character(experiment[,1]))
-			col.colours <- palette()[as.numeric(experiment[idx,2])]
+			  col.colours <- palette()[as.numeric(experiment[idx,2])]
   		}
   		else {
   			col.colours <- rep("white", ncol(tpm.filter))
@@ -52,7 +71,6 @@ shinyServer(function(input, output) {
 	}
 
   	output$heatmap <- renderPlot({
-  		print(input$colour1)
   		if(is.null(input$data) || length(as.character(unlist(strsplit(input$filter, "\\s"))))==0) {
   			return(NULL)
   		}

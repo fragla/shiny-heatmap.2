@@ -13,20 +13,18 @@ shinyUI(pageWithSidebar(
             accept = c(
               "text/csv",
               "text/comma-separated-values,text/plain",
-              ".csv")
+              ".csv",
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              )
           ),
           textAreaInput("filter", "Filter for IDs"),
-      #fileInput("goi", "Choose data points of interest file",
-        # accept = c(
-        #     "text/csv",
-        #     "text/comma-separated-values,text/plain",
-        #     ".csv")
-        #),
           fileInput("experiment", "Choose experiment description file",
             accept = c(
               "text/csv",
               "text/comma-separated-values,text/plain",
-              ".csv")
+              ".csv",
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              )
           )
 
         ), 
@@ -63,9 +61,6 @@ shinyUI(pageWithSidebar(
                   "Other (use selectors)" = "other"),
                 selected="heat.colors",
                 inline=TRUE),
-        #colourWidget(width=35, showColour="background", value="blue", elementId="colour1"),
-        #colourWidget(width=35, showColour="background", value="white", elementId="colour2"),
-        #colourWidget(width=35, showColour="background", value="red", elementId="colour3")
           colourInput("colour1", "Select low colour", value = "blue"),
           colourInput("colour2", "Select medium colour", value = "white"),
           colourInput("colour3", "Select high colour", value = "red")
@@ -76,15 +71,9 @@ shinyUI(pageWithSidebar(
           sliderInput("pdfheight", "PDF height:",
                 min = 1, max = 25, value = 7, step=0.25)
         )
-#    ),
-#,
-        
-        
-       #checkboxInput("hdend", "Horizontal dendrogram", TRUE)
     )),
 
   	mainPanel(
-    	#h3(textOutput("caption")),
     	useShinyjs(),
     	plotOutput("heatmap"),
     	downloadButton(outputId = "down", label = "Download the plot")
