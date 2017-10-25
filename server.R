@@ -1,3 +1,6 @@
+options(shiny.maxRequestSize=500*1024^2)
+
+
 library(shiny)
 library(gplots)
 library(xlsx)
@@ -67,7 +70,8 @@ shinyServer(function(input, output) {
   			na.color="black",
   			ColSideColors=col.colours,
         col=main.palette,
-        breaks=breaks)
+        breaks=breaks,
+        margins = c(8, 16))
 	}
 
   	output$heatmap <- renderPlot({
